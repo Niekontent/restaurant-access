@@ -7,6 +7,7 @@ defmodule RestaurantAccess.Repo.Migrations.CreateLocationsAndVenues do
     create table(:locations) do
       add :name, :string
       add :path, :ltree
+      add :access_level, :string, null: false, default: "bi"
 
       timestamps()
     end
@@ -19,6 +20,8 @@ defmodule RestaurantAccess.Repo.Migrations.CreateLocationsAndVenues do
 
       timestamps()
     end
+
+    create index(:venues, [:location_id])
   end
 
   def down do
