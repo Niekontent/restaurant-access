@@ -1,4 +1,9 @@
 defmodule RestaurantAccess.Venues.Venue do
+  @moduledoc """
+  Represents a venue assigned to a specific location.
+
+  Venue access is determined indirectly through the location hierarchy.
+  """
   use Ecto.Schema
 
   import Ecto.Changeset
