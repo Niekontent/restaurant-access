@@ -16,15 +16,6 @@ config :restaurant_access, RestaurantAccess.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :restaurant_access, RestaurantAccessWeb.Endpoint,
-  # Binding to loopback ipv4 address prevents access from other machines.
-  # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}],
-  check_origin: false,
-  code_reloader: true,
-  debug_errors: true,
-  secret_key_base: "wSMoEe5MWSRsLX2Gym8P11etke9o/zj0oAABzxE85OsNxtL9dSvR+7loU2FNAp9J",
-  watchers: []
 
 # ## SSL Support
 #
@@ -57,10 +48,10 @@ config :logger, :default_formatter, format: "[$level] $message\n"
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
-config :phoenix, :stacktrace_depth, 20
+# config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
-config :phoenix, :plug_init_mode, :runtime
+# config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
-config :swoosh, :api_client, false
+# config :swoosh, :api_client, false

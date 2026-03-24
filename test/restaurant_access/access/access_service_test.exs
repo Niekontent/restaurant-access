@@ -1,4 +1,4 @@
-defmodule RestaurantAccessWeb.Access.AccessServiceTest do
+defmodule RestaurantAccess.Access.AccessServiceTest do
   use ExUnit.Case
   use RestaurantAccess.DataCase
 

@@ -11,17 +11,6 @@ config :restaurant_access,
   ecto_repos: [RestaurantAccess.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-# Configure the endpoint
-config :restaurant_access, RestaurantAccessWeb.Endpoint,
-  url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
-  render_errors: [
-    formats: [json: RestaurantAccessWeb.ErrorJSON],
-    layout: false
-  ],
-  pubsub_server: RestaurantAccess.PubSub,
-  live_view: [signing_salt: "aq0el89d"]
-
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
@@ -29,15 +18,12 @@ config :restaurant_access, RestaurantAccessWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :restaurant_access, RestaurantAccess.Mailer, adapter: Swoosh.Adapters.Local
+# config :restaurant_access, RestaurantAccess.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure Elixir's Logger
 config :logger, :default_formatter,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
