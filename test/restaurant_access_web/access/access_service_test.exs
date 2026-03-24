@@ -9,55 +9,51 @@ defmodule RestaurantAccessWeb.Access.AccessServiceTest do
 
   describe "venues_for/1" do
     setup do
-      loc_root =
-        Repo.insert!(%Location{name: "Root", path: "1", access_level: :single})
+      root =
+        Repo.insert!(%Location{name: "root", access_level: :single})
 
-      loc_child1 =
-        Repo.insert!(%Location{name: "Child1", path: "1.1", access_level: :bi})
+      child1 =
+        Repo.insert!(%Location{name: "child1", parent_id: root.id, access_level: :bi})
 
-      loc_child2 =
-        Repo.insert!(%Location{name: "Child2", path: "1.2", access_level: :node})
+      child2 =
+        Repo.insert!(%Location{name: "child2", parent_id: root.id, access_level: :node})
 
-      loc_grandchild =
-        Repo.insert!(%Location{name: "Grandchild", path: "1.1.1"})
+      grandchild =
+        Repo.insert!(%Location{name: "grandchild", parent_id: child1.id})
 
-      _venue_1 = Repo.insert!(%Venue{name: "V Root", location_id: loc_root.id})
-      _venue_2 = Repo.insert!(%Venue{name: "V Child1", location_id: loc_child1.id})
-      _venue_3 = Repo.insert!(%Venue{name: "V Child2", location_id: loc_child2.id})
-      _venue_4 = Repo.insert!(%Venue{name: "V Grandchild", location_id: loc_grandchild.id})
+      _v_root = Repo.insert!(%Venue{name: "v_root", location_id: root.id})
+      _v_child1 = Repo.insert!(%Venue{name: "v_child1", location_id: child1.id})
+      _v_child2 = Repo.insert!(%Venue{name: "v_child2", location_id: child2.id})
+      _v_grandchild = Repo.insert!(%Venue{name: "v_grandchild", location_id: grandchild.id})
 
       {:ok,
        locations: %{
-         root: loc_root,
-         child1: loc_child1,
-         child2: loc_child2,
-         grandchild: loc_grandchild
+         root: root,
+         child1: child1,
+         child2: child2,
+         grandchild: grandchild
        }}
     end
 
-    test "single mode returns only immediate children", %{
-      locations: locations
-    } do
+    test "single returns only direct children", %{locations: locations} do
       result = AccessService.venues_for(locations.root.id)
+      names = Enum.map(result, & &1.name) |> Enum.sort()
 
-      names = Enum.map(result, & &1.name)
-      assert Enum.sort(names) == ["V Child1", "V Child2"]
+      assert names == ["v_child1", "v_child2"]
     end
 
-    test "bi mode returns all descendants and ancestors", %{
-      locations: locations
-    } do
+    test "bi returns ancestors + descendants + self", %{locations: locations} do
       result = AccessService.venues_for(locations.child1.id)
-      names = Enum.map(result, & &1.name)
+      names = Enum.map(result, & &1.name) |> Enum.sort()
 
-      assert Enum.sort(names) == ["V Child1", "V Grandchild", "V Root"]
+      assert names == ["v_child1", "v_grandchild", "v_root"]
     end
 
-    test "node mode returns same level + their children", %{locations: locations} do
+    test "node returns same level + their children", %{locations: locations} do
       result = AccessService.venues_for(locations.child2.id)
-      names = Enum.map(result, & &1.name)
+      names = Enum.map(result, & &1.name) |> Enum.sort()
 
-      assert Enum.sort(names) == ["V Child1", "V Child2", "V Grandchild"]
+      assert names == ["v_child1", "v_child2", "v_grandchild"]
     end
   end
 end
