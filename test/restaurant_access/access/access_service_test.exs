@@ -21,17 +21,22 @@ defmodule RestaurantAccess.Access.AccessServiceTest do
       grandchild =
         Repo.insert!(%Location{name: "grandchild", parent_id: child1.id})
 
+      grand_grandchild =
+        Repo.insert!(%Location{name: "grand_grandchild", parent_id: grandchild.id})
+
       _v_root = Repo.insert!(%Venue{name: "v_root", location_id: root.id})
       _v_child1 = Repo.insert!(%Venue{name: "v_child1", location_id: child1.id})
       _v_child2 = Repo.insert!(%Venue{name: "v_child2", location_id: child2.id})
       _v_grandchild = Repo.insert!(%Venue{name: "v_grandchild", location_id: grandchild.id})
+      _v_grand_grandchild = Repo.insert!(%Venue{name: "v_grand_grandchild", location_id: grand_grandchild.id})
 
       {:ok,
        locations: %{
          root: root,
          child1: child1,
          child2: child2,
-         grandchild: grandchild
+         grandchild: grandchild,
+         grand_grandchild: grand_grandchild
        }}
     end
 
@@ -46,14 +51,14 @@ defmodule RestaurantAccess.Access.AccessServiceTest do
       result = AccessService.venues_for(locations.child1.id)
       names = Enum.map(result, & &1.name) |> Enum.sort()
 
-      assert names == ["v_child1", "v_grandchild", "v_root"]
+      assert names == ["v_child1", "v_grand_grandchild", "v_grandchild", "v_root"]
     end
 
     test "node returns same level + their children", %{locations: locations} do
       result = AccessService.venues_for(locations.child2.id)
       names = Enum.map(result, & &1.name) |> Enum.sort()
 
-      assert names == ["v_child1", "v_child2", "v_grandchild"]
+      assert names == ["v_child1", "v_child2", "v_grand_grandchild", "v_grandchild"]
     end
   end
 end
